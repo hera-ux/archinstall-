@@ -320,6 +320,55 @@ if [ "$instalar_grafico" = "1" ]; then
 else
     echo "Omitiendo instalación de entorno gráfico..."
 fi
+sudo pacman -S pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
+
+# Instalar yay
+echo "Instalando yay (AUR helper)..."
+pacman -S --noconfirm git base-devel
+cd /home/$username
+sudo -u $username git clone https://aur.archlinux.org/yay.git
+cd yay
+sudo -u $username makepkg -si --noconfirm
+cd ..
+rm -rf yay
+echo "yay instalado correctamente"
+echo ""
+echo "¿Deseas instalar Wine y Proton para juegos/aplicaciones de Windows?"
+echo "1) Sí, instalar todo"
+echo "2) No, omitir"
+read -p "Opción: " instalar_wine
+
+if [ "$instalar_wine" = "1" ]; then
+    echo "Instalando Wine y dependencias..."
+    
+    # Habilitar multilib (necesario para librerías de 32 bits)
+    sed -i '/\[multilib\]/,/Include/s/^#//' /etc/pacman.conf
+    pacman -Sy
+    
+    # Wine y dependencias principales
+    pacman -S --noconfirm wine-staging winetricks wine-gecko wine-mono
+    
+    # Dependencias de 32 y 64 bits para Wine
+    pacman -S --noconfirm lib32-mesa lib32-libgl lib32-gnutls \
+        lib32-alsa-lib lib32-alsa-plugins lib32-libpulse \
+        lib32-openal lib32-mpg123 lib32-giflib lib32-libpng \
+        lib32-gst-plugins-base lib32-gst-plugins-good \
+        lib32-v4l-utils lib32-libxcomposite lib32-libxinerama \
+        lib32-opencl-icd-loader lib32-vkd3d lib32-vulkan-icd-loader
+    
+    # Steam (incluye Proton)
+    pacman -S --noconfirm steam
+    
+    # Lutris (gestor de juegos con soporte Proton/Wine)
+    pacman -S --noconfirm lutris
+    
+    # GameMode para mejor rendimiento
+    pacman -S --noconfirm gamemode lib32-gamemode
+    
+    echo "Wine, Proton (via Steam) y Lutris instalados correctamente."
+else
+    echo "Omitiendo instalación de Wine y Proton..."
+fi
 EOF
 chmod +x /mnt/setup.sh
 arch-chroot /mnt /setup.sh
