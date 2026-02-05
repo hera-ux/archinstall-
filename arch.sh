@@ -112,10 +112,215 @@ esac
 echo "Reconstruyendo initramfs..."
 mkinitcpio -P
 echo "drivers instalados" 
+echo ""
+echo "¿Deseas instalar paquetes adicionales?"
+echo "1) Sí, instalar todo"
+echo "2) Seleccionar categorías"
+echo "3) No, omitir"
+read -p "Opción: " instalar_paquetes
+
+if [ "$instalar_paquetes" = "1" ]; then
+    echo "Instalando todos los paquetes adicionales..."
+    pacman -S --noconfirm base-devel git curl wget nano vim htop fastfetch \
+    openssh networkmanager network-manager-applet dialog wpa_supplicant dhcpcd inetutils dnsutils \
+    unzip unrar p7zip zip tar gzip bzip2 \
+    pulseaudio pulseaudio-alsa alsa-utils pavucontrol vlc ffmpeg \
+    ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji \
+    chromium \
+    python python-pip nodejs npm gcc make cmake gdb \
+    gparted ntfs-3g exfat-utils dosfstools \
+    man-db man-pages reflector ufw bluez bluez-utils
+
+elif [ "$instalar_paquetes" = "2" ]; then
+    echo ""
+    echo "Selecciona las categorías a instalar (s/n):"
+    
+    read -p "¿Herramientas de desarrollo? (s/n): " dev
+    if [ "$dev" = "s" ]; then
+        pacman -S --noconfirm python python-pip nodejs npm gcc make cmake gdb base-devel git
+    fi
+    
+    read -p "¿Chromium? (s/n): " chrome
+    if [ "$chrome" = "s" ]; then
+        pacman -S --noconfirm chromium
+    fi
+    
+    read -p "¿Sistema de archivos y discos? (s/n): " discos
+    if [ "$discos" = "s" ]; then
+        pacman -S --noconfirm gparted ntfs-3g exfat-utils dosfstools
+    fi
+    
+    read -p "¿Fastfetch? (s/n): " fetch
+    if [ "$fetch" = "s" ]; then
+        pacman -S --noconfirm fastfetch
+    fi
+    
+    read -p "¿Fuentes? (s/n): " fuentes
+    if [ "$fuentes" = "s" ]; then
+        pacman -S --noconfirm ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji
+    fi
+    
+    read -p "¿Audio y multimedia? (s/n): " audio
+    if [ "$audio" = "s" ]; then
+        pacman -S --noconfirm pulseaudio pulseaudio-alsa alsa-utils pavucontrol vlc ffmpeg
+    fi
+    
+    read -p "¿Compresión y archivos? (s/n): " compress
+    if [ "$compress" = "s" ]; then
+        pacman -S --noconfirm unzip unrar p7zip zip tar gzip bzip2
+    fi
+    
+    read -p "¿Utilidades de red? (s/n): " red
+    if [ "$red" = "s" ]; then
+        pacman -S --noconfirm openssh network-manager-applet dialog wpa_supplicant dhcpcd inetutils dnsutils curl wget
+    fi
+    
+    read -p "¿Herramientas del sistema? (s/n): " sistema
+    if [ "$sistema" = "s" ]; then
+        pacman -S --noconfirm man-db man-pages reflector ufw bluez bluez-utils nano vim htop
+    fi
+
+else
+    echo "Omitiendo instalación de paquetes adicionales..."
+fi
+
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
-EOF
 
+echo ""
+echo "¿Deseas instalar un entorno gráfico?"
+echo "1) Sí, seleccionar entorno"
+echo "2) No, omitir"
+read -p "Opción: " instalar_grafico
+
+if [ "$instalar_grafico" = "1" ]; then
+    echo ""
+    echo "Selecciona el entorno gráfico:"
+    echo ""
+    echo "=== ENTORNOS DE BAJOS RECURSOS ==="
+    echo "1)  LXDE (muy ligero, ~200MB RAM)"
+    echo "2)  LXQt (ligero y moderno, ~300MB RAM)"
+    echo "3)  XFCE (equilibrado, ~400MB RAM)"
+    echo "4)  MATE (estable, ~500MB RAM)"
+    echo ""
+    echo "=== ENTORNOS COMPLETOS ==="
+    echo "5)  GNOME (moderno, ~800MB RAM)"
+    echo "6)  KDE Plasma (completo, ~600MB RAM)"
+    echo "7)  Cinnamon (elegante, ~700MB RAM)"
+    echo "8)  Budgie (minimalista, ~500MB RAM)"
+    echo ""
+    echo "=== GESTORES DE VENTANAS (X11) ==="
+    echo "9)  i3 (tiling, muy personalizable)"
+    echo "10) Openbox (minimalista, muy ligero)"
+    echo "11) bspwm (tiling avanzado)"
+    echo "12) AwesomeWM (tiling con Lua)"
+    echo ""
+    echo "=== GESTORES DE VENTANAS (WAYLAND) ==="
+    echo "13) Hyprland (tiling moderno con animaciones)"
+    echo "14) Sway (i3 para Wayland)"
+    echo "15) River (minimalista)"
+    echo "16) Niri (scrollable tiling experimental)"
+    echo ""
+    read -p "Selecciona una opción (1-16): " opcion_de
+
+    case $opcion_de in
+        1)
+            echo "Instalando LXDE..."
+            pacman -S --noconfirm xorg xorg-server lxde lxdm
+            systemctl enable lxdm
+            ;;
+        2)
+            echo "Instalando LXQt..."
+            pacman -S --noconfirm xorg xorg-server lxqt sddm
+            systemctl enable sddm
+            ;;
+        3)
+            echo "Instalando XFCE..."
+            pacman -S --noconfirm xorg xorg-server xfce4 xfce4-goodies lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        4)
+            echo "Instalando MATE..."
+            pacman -S --noconfirm xorg xorg-server mate mate-extra lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        5)
+            echo "Instalando GNOME..."
+            pacman -S --noconfirm xorg xorg-server gnome gnome-extra gdm
+            systemctl enable gdm
+            ;;
+        6)
+            echo "Instalando KDE Plasma..."
+            pacman -S --noconfirm xorg xorg-server plasma kde-applications sddm
+            systemctl enable sddm
+            ;;
+        7)
+            echo "Instalando Cinnamon..."
+            pacman -S --noconfirm xorg xorg-server cinnamon lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        8)
+            echo "Instalando Budgie..."
+            pacman -S --noconfirm xorg xorg-server budgie-desktop lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        9)
+            echo "Instalando i3..."
+            pacman -S --noconfirm xorg xorg-server i3-wm i3status i3lock dmenu lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        10)
+            echo "Instalando Openbox..."
+            pacman -S --noconfirm xorg xorg-server openbox obconf tint2 lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        11)
+            echo "Instalando bspwm..."
+            pacman -S --noconfirm xorg xorg-server bspwm sxhkd lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        12)
+            echo "Instalando AwesomeWM..."
+            pacman -S --noconfirm xorg xorg-server awesome lightdm lightdm-gtk-greeter
+            systemctl enable lightdm
+            ;;
+        13)
+            echo "Instalando Hyprland..."
+            pacman -S --noconfirm hyprland kitty waybar swaybg swaylock-effects wofi mako grim slurp
+            echo "Nota: Hyprland requiere configuración manual. Inicia con 'Hyprland' en TTY."
+            ;;
+        14)
+            echo "Instalando Sway..."
+            pacman -S --noconfirm sway waybar swaybg swaylock kitty wofi mako grim slurp
+            echo "Nota: Sway requiere configuración manual. Inicia con 'sway' en TTY."
+            ;;
+        15)
+            echo "Instalando River..."
+            pacman -S --noconfirm river waybar kitty wofi mako grim slurp
+            echo "Nota: River requiere configuración manual. Inicia con 'river' en TTY."
+            ;;
+        16)
+            echo "Instalando Niri..."
+            echo "Advertencia: Niri debe instalarse desde AUR"
+            pacman -S --noconfirm git base-devel
+            read -p "¿Deseas continuar con instalación desde AUR? (s/n): " instalar_aur
+            if [ "$instalar_aur" = "s" ]; then
+                echo "Deberás instalar 'niri' manualmente desde AUR después del primer inicio"
+                pacman -S --noconfirm waybar kitty wofi mako grim slurp
+            fi
+            ;;
+        *)
+            echo "Opción no válida, omitiendo instalación de entorno gráfico..."
+            ;;
+    esac
+    
+    echo ""
+    echo "Entorno gráfico instalado correctamente."
+    
+else
+    echo "Omitiendo instalación de entorno gráfico..."
+fi
+EOF
 chmod +x /mnt/setup.sh
 arch-chroot /mnt /setup.sh
 rm /mnt/setup.sh
