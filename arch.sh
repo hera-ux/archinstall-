@@ -71,6 +71,47 @@ sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 pacman -S --noconfirm grub efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
+# Script de instalación de drivers para Arch Linux
+
+echo "Selecciona tu tarjeta gráfica:"
+echo "1) NVIDIA (GTX 900 series en adelante)"
+echo "2) NVIDIA (GTX 600/700 series)"
+echo "3) NVIDIA (GTX 400/500 series)"
+echo "4) AMD"
+echo "5) Instalar ambos (NVIDIA + AMD)"
+read -p "Opción: " opcion
+
+case $opcion in
+    1)
+        echo "Instalando drivers NVIDIA modernos..."
+        pacman -S --noconfirm nvidia nvidia-utils nvidia-settings lib32-nvidia-utils opencl-nvidia lib32-opencl-nvidia
+        ;;
+    2)
+        echo "Instalando drivers NVIDIA 470xx..."
+        pacman -S --noconfirm nvidia-470xx-dkms nvidia-470xx-utils nvidia-settings lib32-nvidia-470xx-utils
+        ;;
+    3)
+        echo "Instalando drivers NVIDIA 390xx..."
+        pacman -S --noconfirm nvidia-390xx-dkms nvidia-390xx-utils lib32-nvidia-390xx-utils
+        ;;
+    4)
+        echo "Instalando drivers AMD..."
+        pacman -S --noconfirm mesa lib32-mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau radeontop opencl-mesa lib32-opencl-mesa
+        ;;
+    5)
+        echo "Instalando drivers NVIDIA + AMD..."
+        pacman -S --noconfirm nvidia nvidia-utils nvidia-settings lib32-nvidia-utils opencl-nvidia lib32-opencl-nvidia
+        pacman -S --noconfirm mesa lib32-mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau radeontop opencl-mesa lib32-opencl-mesa
+        ;;
+    *)
+        echo "Opción no válida"
+        exit 1
+        ;;
+esac
+
+echo "Reconstruyendo initramfs..."
+mkinitcpio -P
+echo "drivers instalados" 
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 EOF
