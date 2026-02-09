@@ -1,5 +1,25 @@
 
 #!/bin/bash
+clear
+echo -e "\e[34m                   -`                    \e[0m"
+echo -e "\e[34m                  .o+`                   \e[0m"
+echo -e "\e[34m                 `ooo/                   \e[0m"
+echo -e "\e[34m                `+oooo:                  \e[0m"
+echo -e "\e[34m               `+oooooo:                 \e[0m"
+echo -e "\e[34m               -+oooooo+:                \e[0m"
+echo -e "\e[34m             `/:-:++oooo+:               \e[0m"
+echo -e "\e[34m            `/++++/+++++++:              \e[0m"
+echo -e "\e[34m           `/++++++++++++++:             \e[0m"
+echo -e "\e[34m          `/+++ooooooooooooo/`           \e[0m"
+echo -e "\e[34m         ./ooosssso++osssssso+`          \e[0m"
+echo -e "\e[34m        .oossssso-````/ossssss+`         \e[0m"
+echo -e "\e[34m       -osssssso.      :ssssssso.        \e[0m"
+echo -e "\e[34m      :osssssss/        osssso+++.`      \e[0m"
+echo -e "\e[34m     /ossssssss/        +ssssooo/-       \e[0m"
+echo -e "\e[34m   `/ossssso+/:-        -:/+osssso+-     \e[0m"
+echo -e "\e[34m  `+sso+:-`                 `.-/+oso:    \e[0m"
+echo -e "\e[34m `++:.                           `-/+/   \e[0m"
+echo -e "\e[34m .`                                 `/   \e[0m"
 
 # PARTE 1: Particionado
 read -p "¿Qué disco quieres usar? (ej: sda, nvme0n1): " disco
