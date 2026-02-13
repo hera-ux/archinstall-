@@ -1,6 +1,5 @@
 
 #!/bin/bash
-clear
 echo -e "\e[34m                   -`                    \e[0m"
 echo -e "\e[34m                  .o+`                   \e[0m"
 echo -e "\e[34m                 `ooo/                   \e[0m"
